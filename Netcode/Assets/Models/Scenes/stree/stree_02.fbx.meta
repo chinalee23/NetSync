@@ -1,0 +1,275 @@
+fileFormatVersion: 2
+guid: c804b2b8923db594294040a6b71234f1
+timeCreated: 1470747461
+licenseType: Free
+ModelImporter:
+  serializedVersion: 19
+  fileIDToRecycleName:
+    100000: group1 1
+    100002: group2
+    100004: group3
+    100006: Jiejing_caocong01
+    100008: Jiejing_caocong02
+    100010: Jiejing_dianxiangan
+    100012: Jiejing_dianxiangan1
+    100014: Jiejing_dimian01
+    100016: Jiejing_dimian02
+    100018: Jiejing_dimian03
+    100020: Jiejing_guanmucong01
+    100022: Jiejing_guanmucong02
+    100024: Jiejing_guanmucong03
+    100026: Jiejing_guanmucong04
+    100028: Jiejing_men01
+    100030: Jiejing_men02
+    100032: Jiejing_qiang01
+    100034: Jiejing_qiang02
+    100036: Jiejing_qiang03
+    100038: Jiejing_shitou01
+    100040: Jiejing_shitou01 1
+    100042: Jiejing_shitou01 2
+    100044: Jiejing_shitou02
+    100046: Jiejing_shitou02 1
+    100048: Jiejing_shitou02 2
+    100050: Jiejing_shitou03
+    100052: Jiejing_shitou03 1
+    100054: Jiejing_shitou03 2
+    100056: Jiejing_shitou04
+    100058: Jiejing_shitou04 1
+    100060: Jiejing_shitou04 2
+    100062: Jiejing_shu01
+    100064: Jiejing_shu02
+    100066: Jiejing_shu03
+    100068: Jiejing_shu04
+    100070: Jiejing_taijie01
+    100072: Jiejing_taijie04
+    100074: Jiejing_taijie05
+    100076: Jiejing_xiaofangshuan
+    100078: polySurface103
+    100080: polySurface104
+    100082: polySurface105
+    100084: //RootNode
+    400000: group1 1
+    400002: group2
+    400004: group3
+    400006: Jiejing_caocong01
+    400008: Jiejing_caocong02
+    400010: Jiejing_dianxiangan
+    400012: Jiejing_dianxiangan1
+    400014: Jiejing_dimian01
+    400016: Jiejing_dimian02
+    400018: Jiejing_dimian03
+    400020: Jiejing_guanmucong01
+    400022: Jiejing_guanmucong02
+    400024: Jiejing_guanmucong03
+    400026: Jiejing_guanmucong04
+    400028: Jiejing_men01
+    400030: Jiejing_men02
+    400032: Jiejing_qiang01
+    400034: Jiejing_qiang02
+    400036: Jiejing_qiang03
+    400038: Jiejing_shitou01
+    400040: Jiejing_shitou01 1
+    400042: Jiejing_shitou01 2
+    400044: Jiejing_shitou02
+    400046: Jiejing_shitou02 1
+    400048: Jiejing_shitou02 2
+    400050: Jiejing_shitou03
+    400052: Jiejing_shitou03 1
+    400054: Jiejing_shitou03 2
+    400056: Jiejing_shitou04
+    400058: Jiejing_shitou04 1
+    400060: Jiejing_shitou04 2
+    400062: Jiejing_shu01
+    400064: Jiejing_shu02
+    400066: Jiejing_shu03
+    400068: Jiejing_shu04
+    400070: Jiejing_taijie01
+    400072: Jiejing_taijie04
+    400074: Jiejing_taijie05
+    400076: Jiejing_xiaofangshuan
+    400078: polySurface103
+    400080: polySurface104
+    400082: polySurface105
+    400084: //RootNode
+    2300000: Jiejing_caocong01
+    2300002: Jiejing_caocong02
+    2300004: Jiejing_dianxiangan
+    2300006: Jiejing_dianxiangan1
+    2300008: Jiejing_dimian01
+    2300010: Jiejing_dimian02
+    2300012: Jiejing_dimian03
+    2300014: Jiejing_guanmucong01
+    2300016: Jiejing_guanmucong02
+    2300018: Jiejing_guanmucong03
+    2300020: Jiejing_guanmucong04
+    2300022: Jiejing_men01
+    2300024: Jiejing_men02
+    2300026: Jiejing_qiang01
+    2300028: Jiejing_qiang02
+    2300030: Jiejing_qiang03
+    2300032: Jiejing_shitou01
+    2300034: Jiejing_shitou01 1
+    2300036: Jiejing_shitou01 2
+    2300038: Jiejing_shitou02
+    2300040: Jiejing_shitou02 1
+    2300042: Jiejing_shitou02 2
+    2300044: Jiejing_shitou03
+    2300046: Jiejing_shitou03 1
+    2300048: Jiejing_shitou03 2
+    2300050: Jiejing_shitou04
+    2300052: Jiejing_shitou04 1
+    2300054: Jiejing_shitou04 2
+    2300056: Jiejing_shu01
+    2300058: Jiejing_shu02
+    2300060: Jiejing_shu03
+    2300062: Jiejing_shu04
+    2300064: Jiejing_taijie01
+    2300066: Jiejing_taijie04
+    2300068: Jiejing_taijie05
+    2300070: Jiejing_xiaofangshuan
+    2300072: polySurface103
+    2300074: polySurface104
+    2300076: polySurface105
+    3300000: Jiejing_caocong01
+    3300002: Jiejing_caocong02
+    3300004: Jiejing_dianxiangan
+    3300006: Jiejing_dianxiangan1
+    3300008: Jiejing_dimian01
+    3300010: Jiejing_dimian02
+    3300012: Jiejing_dimian03
+    3300014: Jiejing_guanmucong01
+    3300016: Jiejing_guanmucong02
+    3300018: Jiejing_guanmucong03
+    3300020: Jiejing_guanmucong04
+    3300022: Jiejing_men01
+    3300024: Jiejing_men02
+    3300026: Jiejing_qiang01
+    3300028: Jiejing_qiang02
+    3300030: Jiejing_qiang03
+    3300032: Jiejing_shitou01
+    3300034: Jiejing_shitou01 1
+    3300036: Jiejing_shitou01 2
+    3300038: Jiejing_shitou02
+    3300040: Jiejing_shitou02 1
+    3300042: Jiejing_shitou02 2
+    3300044: Jiejing_shitou03
+    3300046: Jiejing_shitou03 1
+    3300048: Jiejing_shitou03 2
+    3300050: Jiejing_shitou04
+    3300052: Jiejing_shitou04 1
+    3300054: Jiejing_shitou04 2
+    3300056: Jiejing_shu01
+    3300058: Jiejing_shu02
+    3300060: Jiejing_shu03
+    3300062: Jiejing_shu04
+    3300064: Jiejing_taijie01
+    3300066: Jiejing_taijie04
+    3300068: Jiejing_taijie05
+    3300070: Jiejing_xiaofangshuan
+    3300072: polySurface103
+    3300074: polySurface104
+    3300076: polySurface105
+    4300000: Jiejing_shu04
+    4300002: Jiejing_shu03
+    4300004: polySurface105
+    4300006: Jiejing_shitou02
+    4300008: Jiejing_shitou01
+    4300010: Jiejing_shitou03
+    4300012: Jiejing_shitou04
+    4300014: Jiejing_shitou02
+    4300016: Jiejing_shitou01
+    4300018: Jiejing_shitou03
+    4300020: Jiejing_shitou04
+    4300022: Jiejing_shitou02
+    4300024: Jiejing_shitou01
+    4300026: Jiejing_shitou03
+    4300028: Jiejing_shitou04
+    4300030: polySurface104
+    4300032: polySurface103
+    4300034: Jiejing_dianxiangan1
+    4300036: Jiejing_taijie05
+    4300038: Jiejing_taijie04
+    4300040: Jiejing_guanmucong01
+    4300042: Jiejing_guanmucong02
+    4300044: Jiejing_guanmucong03
+    4300046: Jiejing_guanmucong04
+    4300048: Jiejing_dimian02
+    4300050: Jiejing_dimian03
+    4300052: Jiejing_dimian01
+    4300054: Jiejing_caocong02
+    4300056: Jiejing_qiang03
+    4300058: Jiejing_men02
+    4300060: Jiejing_men01
+    4300062: Jiejing_xiaofangshuan
+    4300064: Jiejing_dianxiangan
+    4300066: Jiejing_qiang02
+    4300068: Jiejing_shu01
+    4300070: Jiejing_shu02
+    4300072: Jiejing_qiang01
+    4300074: Jiejing_caocong01
+    4300076: Jiejing_taijie01
+    9500000: //RootNode
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleRotations: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importBlendShapes: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 1
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 0
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
