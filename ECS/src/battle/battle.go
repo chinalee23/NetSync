@@ -4,12 +4,14 @@ import (
 	"encoding/json"
 	"fmt"
 	"network"
+	"sync"
 	"time"
 )
 
 type Player struct {
 	sockIndex int
 	ready     bool
+	delay     int
 }
 
 type stMessage struct {
@@ -17,9 +19,22 @@ type stMessage struct {
 	Data    *json.RawMessage `json:"data"`
 }
 
-type protoFight struct {
+type protoCommon struct {
+	MsgType string `json:"msgType"`
+}
+
+type protoEnterRsp struct {
 	MsgType  string `json:"msgType"`
 	PlayerId int    `json:"playerId"`
+}
+
+type protoBattleStart struct {
+	MsgType   string `json:"msgType"`
+	PlayerIds []int  `json:"playerIds"`
+}
+
+type protoFight struct {
+	MsgType string `json:"msgType"`
 }
 
 type protoFrame struct {
@@ -35,6 +50,8 @@ var players map[int]*Player
 var frames []*json.RawMessage
 var frameNo int
 var frameReadyCount int
+var playerReadyCount int
+var wg sync.WaitGroup
 
 func start() {
 	for {
@@ -47,7 +64,7 @@ func start() {
 			}
 		}
 
-		time.Sleep(10 * time.Microsecond)
+		time.Sleep(10 * time.Millisecond)
 	}
 }
 
@@ -61,30 +78,79 @@ func processMsg(msg *network.Message) {
 	}
 	switch jd.MsgType {
 	case "enter":
-		processEnter(msg)
+		processEnter(msg.SockIndex)
 		break
+	case "ready":
+		processReady()
 	case "frame":
 		processFrame(jd.Data)
 		break
 	}
 }
 
-func processEnter(msg *network.Message) {
+func processEnter(sockIndex int) {
 	fmt.Println("enter one player")
 	player := &Player{
-		sockIndex: msg.SockIndex,
+		sockIndex: sockIndex,
 		ready:     false,
+		delay:     0,
 	}
-	players[msg.SockIndex] = player
+	players[sockIndex] = player
+	sendEnterRsp(player)
 
-	if len(players) < max_player_count {
+	if len(players) == max_player_count {
+		fmt.Println("all players in, battleStart")
+		sendBattleStart()
+
+		frames = make([]*json.RawMessage, 0)
+		frameNo = 1
+		frameReadyCount = 0
+		playerReadyCount = 0
+	}
+}
+
+func sendEnterRsp(player *Player) {
+	js := protoEnterRsp{
+		MsgType:  "enterRsp",
+		PlayerId: len(players),
+	}
+	jd, err := json.Marshal(js)
+	if err != nil {
+		fmt.Println("marshal error: ", err)
+		return
+	}
+	network.Send(player.sockIndex, jd)
+}
+
+func sendBattleStart() {
+	playerIds := make([]int, len(players))
+	for i := 0; i < len(players); i++ {
+		playerIds[i] = i + 1
+	}
+	for _, player := range players {
+		js := protoBattleStart{
+			MsgType:   "battleStart",
+			PlayerIds: playerIds,
+		}
+		jd, err := json.Marshal(js)
+		if err != nil {
+			fmt.Println("marshal error: ", err)
+			return
+		}
+		fmt.Println("send battle start to", player.sockIndex)
+		network.Send(player.sockIndex, jd)
+	}
+}
+
+func processReady() {
+	playerReadyCount++
+	if playerReadyCount != len(players) {
 		return
 	}
 
-	for i, player := range players {
+	for _, player := range players {
 		js := protoFight{
-			MsgType:  "fight",
-			PlayerId: i,
+			MsgType: "fight",
 		}
 		jd, err := json.Marshal(js)
 		if err != nil {
@@ -93,36 +159,59 @@ func processEnter(msg *network.Message) {
 		}
 		network.Send(player.sockIndex, jd)
 	}
-
-	frames = make([]*json.RawMessage, 0)
-	frameNo = 1
-	frameReadyCount = 0
+	go fight()
 }
 
 func processFrame(data *json.RawMessage) {
-	frameReadyCount++
+	// frameReadyCount++
+	wg.Wait()
+	wg.Add(1)
 	frames = append(frames, data)
-	if len(frames) < max_player_count {
-		return
-	}
+	wg.Done()
+	// if len(frames) < max_player_count {
+	// 	return
+	// }
 
-	fmt.Println("frame [ ", frameNo, " ] all ready")
-	for _, player := range players {
-		js := protoFrame{
-			MsgType: "frame",
-			Data:    frames,
-		}
-		jd, err := json.Marshal(js)
-		if err != nil {
-			fmt.Println("marshal error: ", err)
-			return
-		}
-		network.Send(player.sockIndex, jd)
-	}
+	// for _, player := range players {
+	// 	js := protoFrame{
+	// 		MsgType: "frame",
+	// 		Data:    frames,
+	// 	}
+	// 	jd, err := json.Marshal(js)
+	// 	if err != nil {
+	// 		fmt.Println("marshal error: ", err)
+	// 		return
+	// 	}
+	// 	network.Send(player.sockIndex, jd)
+	// }
 
-	frames = make([]*json.RawMessage, 0)
-	frameNo++
-	frameReadyCount = 0
+	// frames = make([]*json.RawMessage, 0)
+	// frameNo++
+	// frameReadyCount = 0
+}
+
+func fight() {
+	for {
+		wg.Wait()
+		wg.Add(1)
+		for _, player := range players {
+			js := protoFrame{
+				MsgType: "frame",
+				Data:    frames,
+			}
+			jd, err := json.Marshal(js)
+			if err != nil {
+				fmt.Println("marshal error: ", err)
+				return
+			}
+			network.Send(player.sockIndex, jd)
+			fmt.Println("send data")
+		}
+		frames = make([]*json.RawMessage, 0)
+		frameNo++
+		wg.Done()
+		time.Sleep(20 * time.Millisecond)
+	}
 }
 
 func Start() {

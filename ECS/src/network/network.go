@@ -1,6 +1,8 @@
 package network
 
 import (
+	"bytes"
+	"encoding/binary"
 	"fmt"
 	"net"
 )
@@ -12,6 +14,20 @@ type stConnection struct {
 
 var guid int
 var mapConnection map[int]*stConnection
+
+func toBytes(n int) []byte {
+	tmp := int32(n)
+	bytesBuffer := bytes.NewBuffer([]byte{})
+	binary.Write(bytesBuffer, binary.BigEndian, tmp)
+	return bytesBuffer.Bytes()
+}
+
+func toInt(b []byte) int {
+	bytesBuffer := bytes.NewBuffer(b)
+	var tmp int32
+	binary.Read(bytesBuffer, binary.BigEndian, &tmp)
+	return int(tmp)
+}
 
 func handleConnect(socket net.Conn) {
 	conn := &stConnection{
@@ -30,17 +46,23 @@ func recv(conn *stConnection) {
 
 	for {
 		data := make([]byte, 1024)
-		len, err := conn.socket.Read(data)
+		recvLen, err := conn.socket.Read(data)
 		if err != nil {
 			fmt.Println("read error: ", err)
 			return
 		}
-		fmt.Println("receve data, len: ", len)
-		msg := &Message{
-			Data:      data[:len],
-			SockIndex: conn.index,
+
+		offset := 0
+		for offset < recvLen {
+			dataLen := toInt(data)
+			msg := &Message{
+				Data:      data[4:dataLen],
+				SockIndex: conn.index,
+			}
+			saveMessage(msg)
+			data = data[dataLen:]
+			offset += dataLen
 		}
-		saveMessage(msg)
 	}
 }
 
@@ -73,11 +95,14 @@ func Start() {
 }
 
 func Send(index int, data []byte) {
+	sLen := toBytes(len(data) + 4)
+	msg := make([]byte, 0)
+	msg = append(msg, sLen...)
+	msg = append(msg, data...)
 	conn := mapConnection[index]
-	len, err := conn.socket.Write(data)
+	_, err := conn.socket.Write(msg)
 	if err != nil {
 		fmt.Println("send error: ", err)
 		return
 	}
-	fmt.Println("send success, len: ", len)
 }
