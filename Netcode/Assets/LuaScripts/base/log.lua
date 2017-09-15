@@ -51,7 +51,7 @@ local function info( t, ... )
 end
 
 local function error( t, ... )
-	output(LuaError, t, ...)
+	output(_error, t, ...)
 end
 
 log = {

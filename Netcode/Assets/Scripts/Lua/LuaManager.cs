@@ -19,6 +19,10 @@ public class LuaManager : Singleton<LuaManager> {
     public delegate void LuaProcessMsg(string msg);
     LuaProcessMsg lfProcessMsg;
 
+    [CSharpCallLua]
+    public delegate void LuaStart();
+    LuaStart lfStart;
+
     byte[] load(ref string filepath) {
         filepath = filepath.Replace('.', '/');
         string realPath = Path.Combine(Application.dataPath, "LuaScripts/" + filepath + ".lua");
@@ -45,6 +49,7 @@ public class LuaManager : Singleton<LuaManager> {
         entry.Get("update", out lfUpdate);
         entry.Get("fixedUpdate", out lfFixedupdate);
         entry.Get("processMsg", out lfProcessMsg);
+        entry.Get("start", out lfStart);
     }
 
     public object[] DoLua(string name, string chunk = "chunk", LuaTable env = null) {
@@ -75,6 +80,12 @@ public class LuaManager : Singleton<LuaManager> {
     public void ProcessMsg(string msg) {
         if (lfProcessMsg != null) {
             lfProcessMsg(msg);
+        }
+    }
+
+    public void Start() {
+        if (lfStart != null) {
+            lfStart();
         }
     }
 }

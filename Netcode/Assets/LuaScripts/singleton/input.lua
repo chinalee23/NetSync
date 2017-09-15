@@ -1,7 +1,7 @@
 module('Singleton.Input')
 
-key_W = false
-key_S = false
-key_A = false
-key_D = false
+key_up = false
+key_down = false
+key_left = false
+key_right = false
 

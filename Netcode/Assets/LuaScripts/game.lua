@@ -1,18 +1,22 @@
 module('game')
 
+local json = require 'dkjson'
+
+isOnline = true
 
 local function onEnterRsp(msg)
 	playerId = msg.playerId
+	log.info('my playerId', playerId)
 end
 NET.addListener('enterRsp', onEnterRsp)
 
 remotePlayers = {}
-local function onEnterNotice(msg)
-	table.insert(remotePlayers, msg.playerId)
-end
-NET.addListener('enterNotice', onEnterNotice)
-
-local function onBattleStart( ... )
+local function onBattleStart(msg)
+	for _, v in ipairs(msg.playerIds) do
+		if v ~= game.playerId then
+			table.insert(remotePlayers, v)
+		end
+	end
 	LuaInterface.LoadScene('NetTest')
 end
 NET.addListener('battleStart', onBattleStart)
@@ -32,24 +36,39 @@ function addFixedupdate(func)
 	end
 end
 
-function update( ... )
+local function update( ... )
 	for k, _ in pairs(upfuncs) do
 		k()
 	end
 end
 
-function fixedUpdate( ... )
+local function fixedUpdate( ... )
 	for k, _ in pairs(fixedUpfuncs) do
 		k()
 	end
 end
 
-function processMsg(msg)
+local function processMsg(msg)
 	NET.receive(msg)
+end
+
+function start( ... )
+	if isOnline then
+		LuaInterface.Connect()
+		local jd = json.encode({
+			msgType = 'enter',
+		})
+		NET.send(jd)
+	else
+		playerId = 1
+		-- table.insert(remotePlayers, 101)
+		LuaInterface.LoadScene('NetTest')
+	end
 end
 
 return {
 	update = update,
 	fixedUpdate = fixedUpdate,
 	processMsg = processMsg,
+	start = start,
 }

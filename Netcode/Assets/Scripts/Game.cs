@@ -13,13 +13,16 @@ public class Game : MonoBehaviour {
 
 	void Awake() {
         inst = this;
+
+        Application.runInBackground = true;
+
         init();
 
         DontDestroyOnLoad(gameObject);
     }
 
 	void Start () {
-        
+        LuaManager.Instance().Start();
 	}
 		
 	void Update () {
@@ -33,5 +36,9 @@ public class Game : MonoBehaviour {
 
     void init() {
         LuaManager.Instance().Init();
+    }
+
+    void OnApplicationQuit() {
+        NetSystem.Instance().Close();
     }
 }

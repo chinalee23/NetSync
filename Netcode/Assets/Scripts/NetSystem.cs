@@ -32,12 +32,25 @@ public class NetSystem : Singleton<NetSystem> {
                 Debug.LogError("connect lose");
                 return;
             }
-            byte[] bt = new byte[len];
-            Array.Copy(bufferSocket.bt, 0, bt, 0, len);
-            string msg = System.Text.Encoding.UTF8.GetString(bt);
-            bufferMsg.Add(msg);
 
-            stream.BeginRead(bufferSocket.bt, 0, bufferSocket.bt.Length, readCallback, null);
+            int offset = 0;
+            while (offset < len) {
+                int length = IPAddress.NetworkToHostOrder(BitConverter.ToInt32(bufferSocket.bt, offset));
+                if ((offset + length) > len) {
+                    break;
+                }
+                byte[] bt = new byte[length - 4];
+                Array.Copy(bufferSocket.bt, offset + 4, bt, 0, length - 4);
+                string msg = System.Text.Encoding.UTF8.GetString(bt);
+                bufferMsg.Add(msg);
+
+                offset += length;
+            }
+
+            int lenLeft = len - offset;
+            Array.Copy(bufferSocket.bt, offset, bufferSocket.bt, 0, lenLeft);
+
+            stream.BeginRead(bufferSocket.bt, lenLeft, bufferSocket.bt.Length - lenLeft, readCallback, null);
         }
     }
 
@@ -55,7 +68,11 @@ public class NetSystem : Singleton<NetSystem> {
             return;
         }
         byte[] data = System.Text.Encoding.UTF8.GetBytes(msg);
-        stream.Write(data, 0, data.Length);
+        byte[] btLen = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(data.Length + 4));
+        byte[] btMsg = new byte[data.Length + 4];
+        Array.Copy(btLen, 0, btMsg, 0, 4);
+        Array.Copy(data, 0, btMsg, 4, data.Length);
+        stream.Write(btMsg, 0, data.Length + 4);
     }
 
     IEnumerator delaySend(string msg) {

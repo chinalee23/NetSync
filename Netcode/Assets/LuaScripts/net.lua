@@ -12,6 +12,7 @@ end
 function receive(msg)
 	jd = json.decode(msg, 1, nil)
 
+	-- log.info('receive msg', jd.msgType)
 	if listener[jd.msgType] then
 		for _, cb in ipairs(listener[jd.msgType]) do
 			cb(jd)

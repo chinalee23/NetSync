@@ -4,9 +4,9 @@ require 'base.instance'
 require 'base.module'
 require 'base.log'
 
-require 'battle.world'
-
 require 'net'
+
+require 'battle.world'
 
 ResourcesMgr = CS.ResourcesMgr
 LuaInterface = CS.LuaInterface

@@ -1,34 +1,26 @@
 module('Battle.World')
 
-local started = false
-local frame = 0
+local json = require 'dkjson'
 
-local remotePlayers = {}
+local started = false
+frame = 0
 
 local systems = {}
 local systemList = {
 	'system.input',
-	'system.command',
+	-- 'system.command',
 	'system.player',
 	'system.camera',
 	'system.behavior',
 }
 
-local function onEnterRsp(msg)
-	playerId = msg.playerId
-end
-NET.addListener('enterRsp', onEnterRsp)
-
-local function onEnterNotice(msg)
-	table.insert(remotePlayers, msg.playerId)
-end
-NET.addListener('enterNotice', onEnterNotice)
-
 local function init( ... )
 	require 'entity.entity'
 
+	require 'singleton.player'
 	require 'singleton.camera'
 	require 'singleton.input'
+	require 'singleton.command'
 
 	require 'Component.Command'
 	require 'Component.Controllable'
@@ -38,29 +30,22 @@ local function init( ... )
 end
 
 local entities = {}
+local playerToEntity = {}
 local function initEntity( ... )
-	local player = require 'battle.player'
-
 	-- me
-	local me = instance(player, playerId)
 	local entity = instance(Entity)
-	local goMe = ResourcesMgr.LoadPrefab('Characters/16011002_Diffuse_Prefab')
-	goMe.name = 'me'
+	local go = ResourcesMgr.LoadPrefab('Characters/16011002_Diffuse_Prefab')
+	go.name = 'me'
 
-	local trans = entity:addComponent(Component.Transform, goMe.transform)
+	local trans = entity:addComponent(Component.Transform, go.transform)
 	trans.scale:set(3, 3, 3)
 	trans.position:set(0, 0, 0)
-
-	entity:addComponent(Component.Controllable)
-	entity:addComponent(Component.Command)
+	trans.rotation:set(0, 0, 0)
 	entities[entity.id] = entity
-
-	player.entity = entity
+	playerToEntity[game.playerId] = entity
 
 	-- enemy
-	for _, v in ipairs(remotePlayers) do
-		local enemy = instance(player, v)
-
+	for _, v in ipairs(game.remotePlayers) do
 		local entity = instance(Entity)
 		local goEnemy = ResourcesMgr.LoadPrefab('Characters/16011002_Diffuse_Prefab')
 		goEnemy.name = 'enemy' .. v
@@ -68,9 +53,11 @@ local function initEntity( ... )
 		local trans = entity:addComponent(Component.Transform, goEnemy.transform)
 		trans.scale:set(4, 4, 4)
 		trans.position:set(20, 0, 20)
+		trans.rotation:set(0, 0, 0)
 
 		entity:addComponent(Component.Command)
 		entities[entity.id] = entity
+		playerToEntity[v] = entity
 	end
 end
 
@@ -93,15 +80,27 @@ local function update( ... )
 	end
 end
 
-local function fixedUpdate( ... )
-	if not started then return end
-	
-	frame = frame + 1
+local function goOneRound( ... )
 	for _, system in ipairs(systems) do
 		if system.fixedUpdate then
 			system.fixedUpdate()
 		end
 	end
+
+	Singleton.Command.commands = {}
+end
+
+readyForNextFrame = true
+local function fixedUpdate( ... )
+	if not started then return end
+
+	if not readyForNextFrame then return end
+
+	frame = frame + 1
+
+	System.Input.handleInput()
+
+	if not game.isOnline then goOneRound() end
 end
 
 function getTuples(concerned)
@@ -139,21 +138,20 @@ function getEntities(concerned)
 			end
 		end
 		if flag then
-			rtn[entity.id] = entity
+			table.insert(rtn, entity)
 		end
 	end
 
 	return rtn
 end
 
-function getEntity(id)
-	return entities[id]
+function getEntityFromPlayerId(id)
+	return playerToEntity[id]
 end
 
 function buildWorld( ... )
 	init()
-
-	initSingleton()
+	
 	initEntity()
 	initSystem()
 
@@ -161,9 +159,30 @@ function buildWorld( ... )
 	game.addFixedupdate(fixedUpdate)
 end
 
-function start( ... )
-	log.info('battle start')
+local function fight( ... )
+	log.info('fight')
 	started = true
 end
+NET.addListener('fight', fight)
 
-isOnline = true
+function start( ... )
+	if game.isOnline then
+		local jd = json.encode({
+			msgType = 'ready'
+		})
+		NET.send(jd)
+	else
+		fight()
+	end
+end
+
+
+
+local function onFrame(msg)
+	System.Input.recvInput(msg)
+
+	goOneRound()
+
+	readyForNextFrame = true
+end
+NET.addListener('frame', onFrame)
